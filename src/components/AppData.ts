@@ -1,7 +1,8 @@
-import { IData, IProduct } from "../types";
+import { IAppData, IOrder, IProduct } from "../types";
 import { IEvents } from "./base/events";
 
-export class Data implements IData {
+
+export class AppData implements IAppData {
   protected _cards: IProduct[];
   protected _preview: string | null;
   protected _payment: '' | 'online' | 'upon receipt';
@@ -12,7 +13,6 @@ export class Data implements IData {
   protected _items: string[];
   protected _productsInBasket: IProduct[];
   productsCounter: number | null;
-  indexProducts: number[];
   protected events: IEvents;
 
   constructor(events: IEvents) {
@@ -82,6 +82,17 @@ export class Data implements IData {
     this.events.emit('order:changed');
   }
 
+  get orderData():IOrder {
+    return {
+      payment: this._payment,
+      email: this._email,
+      phone: this._phone,
+      address: this._address,
+      total: this._total,
+      items: this._items
+    }
+  }
+
   updateProductsInBasket() {
     this._productsInBasket = this._cards.filter(item => {
       return item.selected === true;
@@ -98,10 +109,8 @@ export class Data implements IData {
     this._cards.map(item => {
       if(item.id === productId && item.selected === false) {
         item.selected = true;
-        this.events.emit('productsBasket:changed');
       } else if(item.id === productId && item.selected === true) {
         item.selected = false;
-        this.events.emit('productsBasket:changed');
       }
     });
   };
@@ -114,15 +123,8 @@ export class Data implements IData {
   }
 
   сountProducts() {
-    this.productsCounter = this._items.length;
+    this.productsCounter = this._productsInBasket.length;
     return this.productsCounter;
-  }
-
-  setIndexProducts() {
-    for (let i = 1; i <= this.productsCounter; i+=1) {
-      this.indexProducts = [...this.indexProducts, i];
-    }
-    return this.indexProducts;
   }
   
   checkValidationBasket() {

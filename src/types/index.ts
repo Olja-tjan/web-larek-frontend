@@ -1,3 +1,8 @@
+export interface IDataServer<T> {
+  total: number,
+  items: T[]
+}
+
 export interface IProduct {
   id: string;
   description?: string;
@@ -17,7 +22,7 @@ export interface IOrder {
   items: string[];
 }
 
-export interface IData {
+export interface IAppData {
   cards: IProduct[];
   preview: string | null;
   payment: '' | 'online' | 'upon receipt';
@@ -28,47 +33,31 @@ export interface IData {
   items: string[];
   productsInBasket: IProduct[];
   productsCounter: number | null;
-  indexProducts: number[];
-  getCard(cardId: string): IProduct;
+  getCard(productId: string): IProduct;
   updateProductsInBasket(): void;
   selectProduct(productId: string): void;
   setTotal(): void;
   сountProducts(): number | null;
-  setIndexProducts(): number[];
   checkValidationBasket(): boolean;
   checkValidationPaymentForm(): boolean;
   checkValidationContactsForm(): boolean;
 }
 
+export type ApiPostMethods = 'POST';
 
-// export interface ICardsData {
-//   cards: IProduct[];
-//   preview: string | null;
-//   getCard(cardId: string): IProduct;
-// }
+export interface IApi {
+  baseUrl: string;
+  get<T>(uri: string): Promise<T>;
+  post<T>(uri: string, data: object, method?: ApiPostMethods): Promise<T>;
+}
 
-// export interface IOrderData {
-//   payment: 'online' | 'upon receipt';
-//   email: string;
-//   phone: string;
-//   address: string;
-//   total: number | null;
-//   items: string[];
-//   products: IProduct[];
-//   productsCounter: number | null;
-//   indexProducts: number[];
-//   addProduct(product: IProduct): void;
-//   deleteProduct(productId: string): void;
-//   сountProducts(): number | null;
-//   setIndexProducts(): number[];
-//   сountTotal(): number | null;
-//   // checkActiveSelectButton(data: Record<keyof TPayment, 'online' | 'upon receipt'>): boolean;
-//   // checkValidationOrderForm(data: Record<keyof TOrderForm, string>): boolean;
-//   // checkValidationContactsForm(data: Record<keyof TContactsForm, string>): boolean;
-// }
+export type TCategory =
+  | 'другое'
+  | 'софт-скил'
+  | 'дополнительное'
+  | 'кнопка'
+  | 'хард-скил';
 
-// export type TBasket = Pick<IOrder, 'items' | 'total'>;
-
-// export type TPayment = Pick<IOrder, 'payment' | 'address'>;
-
-// export type TContactsForm = Pick<IOrder, 'email' | 'phone'>;
+export type TCategoryMapping = {
+  [Key in TCategory]: string;
+};
