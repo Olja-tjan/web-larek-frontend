@@ -14,7 +14,7 @@ export interface IProduct {
 }
 
 export interface IOrder {
-  payment: '' | 'online' | 'upon receipt';
+  payment: string;
   email: string;
   phone: string;
   address: string;
@@ -24,23 +24,24 @@ export interface IOrder {
 
 export interface IAppData {
   cards: IProduct[];
-  preview: string | null;
-  payment: '' | 'online' | 'upon receipt';
+  payment: string;
   email: string;
   phone: string;
   address: string;
   total: number;
-  items: string[];
   productsInBasket: IProduct[];
   productsCounter: number | null;
+  orderData: IOrder;
+  resetOrderData(): void;
   getCard(productId: string): IProduct;
-  updateProductsInBasket(): void;
   selectProduct(productId: string): void;
+  resetSelectProducts(): void;
+  updateProductsInBasket(): void;
   setTotal(): void;
-  сountProducts(): number | null;
-  checkValidationBasket(): boolean;
-  checkValidationPaymentForm(): boolean;
+  checkValidationOrderForm(): boolean;
   checkValidationContactsForm(): boolean;
+  validateOrderInputs(): string;
+  validateContactsInputs(): string;
 }
 
 export type ApiPostMethods = 'POST';

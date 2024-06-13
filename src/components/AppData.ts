@@ -4,15 +4,14 @@ import { IEvents } from "./base/events";
 
 export class AppData implements IAppData {
   protected _cards: IProduct[];
-  protected _preview: string | null;
-  protected _payment: '' | 'online' | 'upon receipt';
-  protected _email: string;
-  protected _phone: string;
-  protected _address: string;
-  protected _total: number;
-  protected _items: string[];
+  protected _payment: string = '';
+  protected _email: string = '';
+  protected _phone: string = '';
+  protected _address: string = '';
+  protected _total: number = 0;
+  protected _items: string[] = [];
   protected _productsInBasket: IProduct[];
-  productsCounter: number | null;
+  protected _productsCounter: number | null;
   protected events: IEvents;
 
   constructor(events: IEvents) {
@@ -27,62 +26,41 @@ export class AppData implements IAppData {
     this.events.emit('products:changed');
   }
 
+  set payment(value: string) {
+    this._payment = value;
+  }
+
+  set email(value: string) {
+    this._email = value;
+  }
+
+  set phone(value: string) {
+    this._phone = value;
+  }
+
+  set address(value: string) {
+    this._address = value;
+  }
+
   get cards() {
     return this._cards;
-  }
-
-  set preview(productId: string) {
-    if (!productId) {
-      this._preview = null;
-      return;
-    }
-    const selectedCard = this.getCard(productId);
-    if (selectedCard) {
-      this._preview = productId;
-      this.events.emit('card:selected')
-    }
-  }
-
-  get preview () {
-    return this._preview;
-  }
-
-  getCard(productId: string) {
-    return this._cards.find((item) => item.id === productId)
-  }
-
-  get items() {
-    return this._items;
-  }
-  get productsInBasket() {
-    return this._productsInBasket;
   }
 
   get total() {
     return this._total;
   }
 
-  set payment(value: '' | 'online' | 'upon receipt') {
-    this._payment = value;
-    this.events.emit('order:changed');
+  get productsInBasket() {
+    return this._productsInBasket;
   }
 
-  set address(value: string) {
-    this._address = value;
-    this.events.emit('order:changed');
+  get productsCounter() {
+    this._productsCounter = this._productsInBasket.length;
+    return this._productsCounter;
+
   }
 
-  set email(value: string) {
-    this._email = value;
-    this.events.emit('order:changed');
-  }
-
-  set phone(value: string) {
-    this._phone = value;
-    this.events.emit('order:changed');
-  }
-
-  get orderData():IOrder {
+  get orderData(): IOrder {
     return {
       payment: this._payment,
       email: this._email,
@@ -91,6 +69,33 @@ export class AppData implements IAppData {
       total: this._total,
       items: this._items
     }
+  }
+  
+  resetOrderData() {
+    this._items = [];
+    this._total = null;
+    this._address = '';
+    this._email = '';
+    this._phone = '';
+    this._payment = '';
+  }
+
+  getCard(productId: string) {
+    return this._cards.find((item) => item.id === productId)
+  }
+
+  selectProduct(productId: string) {
+    this._cards.map(item => {
+      if (item.id === productId && item.selected === false) {
+        item.selected = true;
+      } else if (item.id === productId && item.selected === true) {
+        item.selected = false;
+      }
+    });
+  }
+
+  resetSelectProducts() {
+    this._cards.forEach(item => item.selected = false)
   }
 
   updateProductsInBasket() {
@@ -102,46 +107,21 @@ export class AppData implements IAppData {
     this._items = this._productsInBasket.map(item => {
       return item.id;
     })
-    this.events.emit('order:changed');
   }
-
-  selectProduct(productId: string) {
-    this._cards.map(item => {
-      if(item.id === productId && item.selected === false) {
-        item.selected = true;
-      } else if(item.id === productId && item.selected === true) {
-        item.selected = false;
-      }
-    });
-  };
 
   setTotal() {
     this._total = this._productsInBasket.reduce((sum, item) => {
       return sum + item.price
     }, 0);
-    this.events.emit('order:changed');
   }
 
-  сountProducts() {
-    this.productsCounter = this._productsInBasket.length;
-    return this.productsCounter;
-  }
-  
-  checkValidationBasket() {
-    if (this._items !== undefined && this._items.length !== 0 && this._total !== 0) {
-      return true;
-    } else {
-      return false;
-    }
-  };
-
-  checkValidationPaymentForm() {
+  checkValidationOrderForm() {
     if (this._payment !== "" && this._address !== "") {
       return true;
     } else {
       return false;
     }
-  };
+  }
 
   checkValidationContactsForm() {
     if (this._email !== "" && this._phone !== "") {
@@ -149,6 +129,25 @@ export class AppData implements IAppData {
     } else {
       return false;
     }
-  };
+  }
 
+  validateOrderInputs() {
+    if (this._payment === "" && this._address === "") {
+      return "Нужно заполнить все поля";
+    } else if (this._payment === "") {
+      return "Нужно выбрать способ оплаты";
+    } else if (this._address === "") {
+      return "Нужно заполнить поле адрес доставки";
+    }
+  }
+
+  validateContactsInputs() {
+    if (this._email === "" && this._phone === "") {
+      return "Нужно заполнить все поля";
+    } else if (this._email === "") {
+      return "Нужно заполнить поле email";
+    } else if (this._phone === "") {
+      return "Нужно заполнить поле телефон";
+    }
+  }
 }

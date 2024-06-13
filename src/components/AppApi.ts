@@ -22,7 +22,7 @@ export class AppApi {
 		return this._baseApi.get<any>(`${urlElement}`).then((res: any) => res);
 	}
 
-	setOrderInfo(data: IOrder): Promise<IOrder> {
+	postOrderInfo(data: IOrder): Promise<IOrder> {
 		return this._baseApi.post<IOrder>(`/order`, data, 'POST').then((res: IOrder) => res);
 	}
 }

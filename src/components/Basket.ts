@@ -16,12 +16,12 @@ export class Basket extends Component<IBasket> {
   constructor(container: HTMLElement, events: IEvents) {
     super(container, events);
 
-    this._button = this.container.querySelector('.basket__button');
-    this._total = this.container.querySelector('.basket__price');
     this._list = this.container.querySelector('.basket__list');
+    this._total = this.container.querySelector('.basket__price');
+    this._button = this.container.querySelector('.basket__button');
 
     if (this._button) {
-      this._button.addEventListener('click', () => this.events.emit('productsBasket:changed'))
+      this._button.addEventListener('click', () => this.events.emit('order:open'))
     }
   }
 

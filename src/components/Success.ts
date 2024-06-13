@@ -8,17 +8,17 @@ export interface ISuccess {
 
 
 export class Success extends Component<ISuccess> {
-  protected _button: HTMLButtonElement;
   protected _description: HTMLElement;
+  protected button: HTMLButtonElement;
 
   constructor(container: HTMLElement, events: IEvents) {
     super(container, events);
 
-    this._button = container.querySelector(`.order-success__close`);
+    this.button = container.querySelector(`.order-success__close`);
     this._description = container.querySelector(`.order-success__description`);
 
-    this._button.addEventListener('click', () => {
-      this.events.emit('basket:cleaner')
+    this.button.addEventListener('click', () => {
+      this.events.emit('success:close');
     });
 
   }

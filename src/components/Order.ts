@@ -9,39 +9,30 @@ export interface IOrder {
 
 
 export class Order extends Form<IOrder> {
-  protected _card: HTMLButtonElement;
-  protected _cash: HTMLButtonElement;
+  _paymentButtons: NodeListOf<HTMLButtonElement>;
 
   constructor(container: HTMLFormElement, events: IEvents
   ) {
     super(container, events);
 
-    this._card = this.container.querySelector('[name="card"]') as HTMLButtonElement;
-    this._cash = this.container.querySelector('[name="cash"]') as HTMLButtonElement;
-
-    if (this._cash) {
-      this._cash.addEventListener('click', () => {
-        if (this._cash.classList.contains('button_alt-active')) {
-          this._card.classList.remove('button_alt-active');
-          this.events.emit('order:input');
-        } else {
-          this._cash.classList.add('button_alt-active');
-          this.events.emit('order:input');
-        }
-      })
-    }
-    if (this._card) {
-      this._card.addEventListener('click', () => {
-        if (this._card.classList.contains('button_alt-active')) {
-          this._cash.classList.remove('button_alt-active');
-          this.events.emit('order:input');
-        } else {
-          this._card.classList.add('button_alt-active');
-          this.events.emit('order:input');
-          
-        }
-      })
+    this._paymentButtons = this.container.querySelectorAll('.button_alt');
+    
+    for (let button of this._paymentButtons) {
+      button.addEventListener('click', () => {
+        if (button.classList.contains('button_alt-active')) return;
+        this._paymentButtons.forEach(btn => btn.classList.remove('button_alt-active'));
+        button.classList.add('button_alt-active');
+        this.events.emit('order:input', {
+          field: 'payment',
+          value: button.name,
+        });
+        this.events.emit('order:validation');
+      });
     }
   }
 
+  resetForm() {
+    super.resetForm();
+    this._paymentButtons.forEach(btn => btn.classList.remove('button_alt-active'));    
+  }
 }

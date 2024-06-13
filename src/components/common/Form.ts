@@ -1,6 +1,5 @@
 import { Component } from '../base/component';
 import { IEvents } from '../base/events';
-import { ensureElement } from '../../utils/utils';
 
 
 interface IFormState {
@@ -8,41 +7,52 @@ interface IFormState {
   errors: string[];
 }
 
+
 export class Form<T> extends Component<IFormState> {
   protected _errors: HTMLElement;
-  protected _submitButton: HTMLButtonElement;
+  protected submitButton: HTMLButtonElement;
 	protected form: HTMLFormElement;
   protected formName: string;
+  protected inputs: NodeListOf<HTMLInputElement>;
 
   constructor(container: HTMLFormElement, events: IEvents) {
     super(container, events);
 
     this._errors = this.container.querySelector('.form__errors');
-    this._submitButton = this.container.querySelector('.button[type=submit]');
-    this.form = this.container.querySelector('.form');
-    console.log(this.form);
-    this.formName = this.form.getAttribute('name');
-    console.log(this.formName);
-    
+    this.submitButton = this.container.querySelector('.button[type=submit]');
+    this.formName = this.container.getAttribute('name');
+    this.inputs = this.container.querySelectorAll('.form__input');
+
     this.container.addEventListener('input', (evt: Event) => {
       const target = evt.target as HTMLInputElement;
       const field = target.name as keyof T;
       const value = target.value;
       this.events.emit(`${this.formName}:input`, { field, value });
+      this.events.emit(`${this.formName}:validation`);
     });
 
     this.container.addEventListener('submit', (evt: Event) => {
       evt.preventDefault();
-      this.events.emit(`${this.formName}:submit`);
+      if (this.formName === 'order') {
+        this.events.emit('contacts:open');
+      } else {
+        this.events.emit('contacts:submit');
+      }
     });
   }
 
   set valid(value: boolean) {
-    this._submitButton.disabled = !value;
+    this.submitButton.disabled = !value;
   }
 
   set errors(value: string) {
     this._errors.textContent = value;
+  }
+
+  resetForm() {
+    this.inputs.forEach((input) => {
+      input.value = '';
+    })
   }
 
   render(state: Partial<T> & IFormState) {
