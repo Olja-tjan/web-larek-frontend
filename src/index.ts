@@ -1,5 +1,5 @@
 import './scss/styles.scss';
-import { IApi, IOrder } from './types';
+import { IApi, IContacts, IOrder } from './types';
 import { API_URL, CDN_URL, settings } from './utils/constants';
 import { cloneTemplate } from './utils/utils';
 
@@ -13,8 +13,8 @@ import { Card } from './components/Card';
 import { Modal } from './components/common/Modal';
 import { Basket, ItemBasket } from './components/Basket';
 import { Order } from './components/Order';
-import { Contacts } from './components/Contacts';
 import { Success } from './components/Success';
+import { Form } from './components/common/Form';
 
 
 const events = new EventEmitter();
@@ -43,7 +43,7 @@ const page = new Page(document.querySelector('.page'), events);
 const modal = new Modal(document.querySelector('#modal-container'), events);
 const basket = new Basket(cloneTemplate(basketTemplate), events);
 const order = new Order(cloneTemplate(orderTemplate), events);
-const contacts = new Contacts(cloneTemplate(contactsTemplate), events);
+const contacts = new Form<IContacts>(cloneTemplate(contactsTemplate), events);
 const success = new Success(cloneTemplate(successTemplate), events);
 
 
@@ -54,8 +54,8 @@ events.onAll((event => {
 
 // Получаем карточки с сервера
 
-Promise.all([api.getCards()])
-  .then(([initialCards]) => {
+api.getCards()
+  .then((initialCards) => {
     appData.cards = initialCards;
   })
   .catch((err) => {
@@ -107,6 +107,7 @@ events.on('card:add', (data: { card: Card }) => {
   appData.selectProduct(card.id);
   appData.updateProductsInBasket();
   modal.close();
+  events.emit('productsBasket:changed');
 })
 
 // Удаление товара из корзины
@@ -120,6 +121,8 @@ events.on('card:delete', (data: { card: Card }) => {
   if (!appData.productsInBasket.length) {
     basket.disableButton();
   }
+  modal.close();
+  events.emit('productsBasket:changed');
 })
 
 // Открытие корзины

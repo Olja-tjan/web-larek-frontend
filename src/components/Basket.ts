@@ -2,7 +2,7 @@ import { Component } from './base/component';
 import { IEvents } from './base/events';
 
 
-export interface IBasket {
+interface IBasket {
   list: HTMLElement[];
   total: number;
 }
@@ -46,7 +46,7 @@ export class Basket extends Component<IBasket> {
 }
 
 
-export interface IProductBasket {
+interface IProductBasket {
   id: string;
   title: string;
   index: number;

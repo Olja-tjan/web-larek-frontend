@@ -2,7 +2,7 @@ import { Component } from "./base/component";
 import { IEvents } from "./base/events";
 
 
-export interface ISuccess {
+interface ISuccess {
   description: number;
 }
 

@@ -24,7 +24,6 @@ export class Modal extends Component<IModal> {
         this.close();
       }
     });
-    this._content.addEventListener("click", (evt) => evt.stopPropagation)
   }
 
   set content(value: HTMLElement) {

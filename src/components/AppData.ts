@@ -102,7 +102,6 @@ export class AppData implements IAppData {
     this._productsInBasket = this._cards.filter(item => {
       return item.selected === true;
     })
-    this.events.emit('productsBasket:changed');
 
     this._items = this._productsInBasket.map(item => {
       return item.id;

@@ -44,6 +44,11 @@ export interface IAppData {
   validateContactsInputs(): string;
 }
 
+export interface IContacts {
+  phone: string;
+  email: string;
+}
+
 export type ApiPostMethods = 'POST';
 
 export interface IApi {

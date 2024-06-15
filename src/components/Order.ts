@@ -2,7 +2,7 @@ import { IEvents } from './base/events';
 import { Form } from './common/Form';
 
 
-export interface IOrder {
+interface IOrder {
   address: string;
   payment: string;
 }
