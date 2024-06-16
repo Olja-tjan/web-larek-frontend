@@ -18,7 +18,7 @@ export class Success extends Component<ISuccess> {
     this._description = container.querySelector(`.order-success__description`);
 
     this.button.addEventListener('click', () => {
-      this.events.emit('success:close');
+      this.events.emit('modal:close');
     });
 
   }

@@ -26,9 +26,11 @@ export class Card extends Component<IProduct> {
     if (this.button) {
       this.button.addEventListener('click', () => {
         if (this.button.textContent === 'Купить') {
-          this.events.emit(`card:add`, { card: this })
+          this.events.emit(`card:add`, { card: this });
+          this.events.emit('modal:close');
         } else if (this.button.textContent === 'Убрать') {
-          this.events.emit(`card:delete`, { card: this })
+          this.events.emit(`card:delete`, { card: this });
+          this.events.emit('modal:close');
         }
       });
     } else {

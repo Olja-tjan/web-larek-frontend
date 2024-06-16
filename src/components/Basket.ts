@@ -72,7 +72,6 @@ export class ItemBasket extends Component<IProductBasket> {
     if (this._button) {
       this._button.addEventListener('click', () => {
         this.events.emit('card:delete', { card: this });
-        this.events.emit('basket:changed', { card: this });
         this.container.remove();
       });
     }
